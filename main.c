@@ -133,6 +133,8 @@ int main(int argc, char** argv){
     pthread_t sqr[SUDOKU_SIZE];
     int id[SUDOKU_SIZE];
     double time = 0.0;
+    int option = atoi(argv[1]);
+    clock_t start,end;
 
     fp = fopen(filename, "r"); 
     if(fp == NULL){
@@ -145,32 +147,40 @@ int main(int argc, char** argv){
     fclose(fp); 
     
     /* each thread does all 9 parts */
-    clock_t startA = clock();
-    pthread_create(&rows,NULL,rowCheck,NULL);
-    pthread_create(&cols,NULL,colCheck,NULL);
-    pthread_create(&sqrs,NULL,sqrCheck,NULL);
-    clock_t endA = clock();
+    if(option == 1){
+        start = clock();
+        pthread_create(&rows,NULL,rowCheck,NULL);
+        pthread_create(&cols,NULL,colCheck,NULL);
+        pthread_create(&sqrs,NULL,sqrCheck,NULL);
+        end = clock();
+    }
     
     /* each thread does only 1 part */
-    clock_t startB = clock();
-    for(int i = 0; i < SUDOKU_SIZE; i++){
-        id[i] = i;
-        pthread_create(&row[i],NULL,checkOneRow,(void*)(id+i));
-        pthread_create(&col[i],NULL,checkOneCol,(void*)(id+i));
-        pthread_create(&sqr[i],NULL,checkOneSqr,(void*)(id+i));
+    if(option == 2){
+        start = clock();
+        for(int i = 0; i < SUDOKU_SIZE; i++){
+            id[i] = i;
+            pthread_create(&row[i],NULL,checkOneRow,(void*)(id+i));
+            pthread_create(&col[i],NULL,checkOneCol,(void*)(id+i));
+            pthread_create(&sqr[i],NULL,checkOneSqr,(void*)(id+i));
+        }
+        end = clock();
     }
-    clock_t endB = clock();
     
     /* close threads w/ all 9 parts */
-    pthread_join(rows,NULL);
-    pthread_join(cols,NULL);
-    pthread_join(sqrs,NULL);
+    if(option == 1){
+        pthread_join(rows,NULL);
+        pthread_join(cols,NULL);
+        pthread_join(sqrs,NULL);
+    }
     
     /* close threads w/ only 1 part */
-    for(int i = 0; i < SUDOKU_SIZE; i++){
-        pthread_join(row[i],NULL);
-        pthread_join(col[i],NULL);
-        pthread_join(sqr[i],NULL);
+    if(option == 2){
+        for(int i = 0; i < SUDOKU_SIZE; i++){
+            pthread_join(row[i],NULL);
+            pthread_join(col[i],NULL);
+            pthread_join(sqr[i],NULL);
+        }
     }
     
     printf("BOARD STATE IN %s:\n",filename);
@@ -181,13 +191,11 @@ int main(int argc, char** argv){
         printf("\n");
     }
     if(valid)
-        printf("SOLUTION: YES\n");
+        printf("SOLUTION: YES ");
     else
-        printf("SOLUTION: NO\n");
-    printf("Option 1 time: %f seconds\n",
-        (double)(endA - startA) / CLOCKS_PER_SEC);
-    printf("Option 2 time: %f seconds\n",
-        (double)(endB - startB) / CLOCKS_PER_SEC);
+        printf("SOLUTION: NO ");
+    printf("(%f seconds)\n",
+        (double)(end - start) / CLOCKS_PER_SEC);
     
     return 0; 
 }
