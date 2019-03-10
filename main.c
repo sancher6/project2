@@ -8,6 +8,7 @@ Project 2
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <time.h>
 
 #define MAXCHAR 18
 #define SUDOKU_SIZE 9
@@ -43,11 +44,17 @@ void *rowCheck(void *param){
         if(check[i] != 1)
             valid = 0;
     }
-        
-    if(valid)
-        printf("rows are valid\n");
-    else
-        printf("rows are NOT valid\n");
+}
+
+void *checkOneRow(void *param){
+    int *row = (int*) param;
+    int rowSum = 0;
+    
+    for(int i = 0; i < SUDOKU_SIZE; i++){
+        rowSum += sudoku[*row][i];
+    }
+    if(rowSum != CORRECT_SUDOKU)
+        valid = 0;
 }
 
 void *colCheck(void *param){
@@ -67,11 +74,17 @@ void *colCheck(void *param){
         if(check[i] != 1)
             valid = 0;
     }
-        
-    if(valid)
-        printf("cols are valid\n");
-    else
-        printf("cols are NOT valid\n");
+}
+
+void *checkOneCol(void *param){
+    int *col = (int*) param;
+    int colSum = 0;
+    
+    for(int i = 0; i < SUDOKU_SIZE; i++){
+        colSum += sudoku[i][*col];
+    }
+    if(colSum != CORRECT_SUDOKU)
+        valid = 0;
 }
 
 void *sqrCheck(void *param){
@@ -93,11 +106,21 @@ void *sqrCheck(void *param){
     
     if(sum != SUDOKU_SIZE)
         valid = 0;
-        
-    if(valid)
-        printf("sqrs are valid\n");
-    else
-        printf("sqrs are NOT valid\n");
+}
+
+void *checkOneSqr(void *param){
+    int *sqr = (int*) param;
+    int sqrSum = 0;
+    int iOffset = 3 * (*sqr % (SUDOKU_SIZE / 3));
+    int jOffset = 3 * (*sqr / (SUDOKU_SIZE / 3));
+    
+    for(int i = 0; i < (SUDOKU_SIZE / 3); i++){
+        for(int j = 0; j < (SUDOKU_SIZE / 3); j++){
+            sqrSum += sudoku[i+iOffset][j+jOffset];
+        }
+    }
+    if(sqrSum != CORRECT_SUDOKU)
+        valid = 0;
 }
 
 int main(int argc, char** argv){
@@ -105,6 +128,11 @@ int main(int argc, char** argv){
     char str[MAXCHAR]; 
     char* filename = "input.txt";
     pthread_t rows,cols,sqrs;
+    pthread_t row[SUDOKU_SIZE];
+    pthread_t col[SUDOKU_SIZE];
+    pthread_t sqr[SUDOKU_SIZE];
+    int id[SUDOKU_SIZE];
+    double time = 0.0;
 
     fp = fopen(filename, "r"); 
     if(fp == NULL){
@@ -116,13 +144,50 @@ int main(int argc, char** argv){
     }
     fclose(fp); 
     
+    /* each thread does all 9 parts */
+    clock_t startA = clock();
     pthread_create(&rows,NULL,rowCheck,NULL);
     pthread_create(&cols,NULL,colCheck,NULL);
     pthread_create(&sqrs,NULL,sqrCheck,NULL);
+    clock_t endA = clock();
     
+    /* each thread does only 1 part */
+    clock_t startB = clock();
+    for(int i = 0; i < SUDOKU_SIZE; i++){
+        id[i] = i;
+        pthread_create(&row[i],NULL,checkOneRow,(void*)(id+i));
+        pthread_create(&col[i],NULL,checkOneCol,(void*)(id+i));
+        pthread_create(&sqr[i],NULL,checkOneSqr,(void*)(id+i));
+    }
+    clock_t endB = clock();
+    
+    /* close threads w/ all 9 parts */
     pthread_join(rows,NULL);
     pthread_join(cols,NULL);
     pthread_join(sqrs,NULL);
+    
+    /* close threads w/ only 1 part */
+    for(int i = 0; i < SUDOKU_SIZE; i++){
+        pthread_join(row[i],NULL);
+        pthread_join(col[i],NULL);
+        pthread_join(sqr[i],NULL);
+    }
+    
+    printf("BOARD STATE IN %s:\n",filename);
+    for(int i = 0; i < SUDOKU_SIZE; i++){
+        for(int j = 0; j < SUDOKU_SIZE; j++){
+            printf("%d ",sudoku[i][j]);
+        }
+        printf("\n");
+    }
+    if(valid)
+        printf("SOLUTION: YES\n");
+    else
+        printf("SOLUTION: NO\n");
+    printf("Option 1 time: %f seconds\n",
+        (double)(endA - startA) / CLOCKS_PER_SEC);
+    printf("Option 2 time: %f seconds\n",
+        (double)(endB - startB) / CLOCKS_PER_SEC);
     
     return 0; 
 }
