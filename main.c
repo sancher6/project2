@@ -15,17 +15,18 @@ Project 2
 #define CORRECT_SUDOKU 45
 
 int valid = 1;
-int sudoku[SUDOKU_SIZE][SUDOKU_SIZE] = {/* ; /* DEBUG */
-    {1,2,3,4,5,6,7,8,9},
-    {7,8,9,1,2,3,4,5,6},
-    {4,5,6,7,8,9,1,2,3},
-    {3,1,2,8,4,5,9,6,7},
-    {6,9,7,3,1,2,8,4,5},
-    {8,4,5,6,9,7,3,1,2},
-    {2,3,1,5,7,4,6,9,8},
-    {9,6,8,2,3,1,5,7,4},
-    {5,7,4,9,6,8,2,3,1}
-};
+int sudoku[SUDOKU_SIZE][SUDOKU_SIZE]; 
+// int sudoku[SUDOKU_SIZE][SUDOKU_SIZE] = {/* ; /* DEBUG */
+//     {1,2,3,4,5,6,7,8,9},
+//     {7,8,9,1,2,3,4,5,6},
+//     {4,5,6,7,8,9,1,2,3},
+//     {3,1,2,8,4,5,9,6,7},
+//     {6,9,7,3,1,2,8,4,5},
+//     {8,4,5,6,9,7,3,1,2},
+//     {2,3,1,5,7,4,6,9,8},
+//     {9,6,8,2,3,1,5,7,4},
+//     {5,7,4,9,6,8,2,3,1}
+// };
 
 void *rowCheck(void *param){
     int check[SUDOKU_SIZE] = {0,0,0,0,0,0,0,0,0};
@@ -134,7 +135,6 @@ int main(int argc, char** argv){
     int id[SUDOKU_SIZE];
     int i = 0, totalnums, j = 0;
     size_t count; 
-    int sudoku[SUDOKU_SIZE][SUDOKU_SIZE]; 
     char *line = malloc(SUDOKU_SIZE); 
     double time = 0.0;
     int option = atoi(argv[1]);
