@@ -132,6 +132,10 @@ int main(int argc, char** argv){
     pthread_t col[SUDOKU_SIZE];
     pthread_t sqr[SUDOKU_SIZE];
     int id[SUDOKU_SIZE];
+    int i = 0, totalnums, j = 0;
+    size_t count; 
+    int sudoku[SUDOKU_SIZE][SUDOKU_SIZE]; 
+    char *line = malloc(SUDOKU_SIZE); 
     double time = 0.0;
     int option = atoi(argv[1]);
     clock_t start,end;
@@ -141,8 +145,10 @@ int main(int argc, char** argv){
         printf("Could not open file %s", filename); 
         return 1; 
     }
-    while(fgets(str, MAXCHAR, fp) != NULL){
-        printf("%s\n", str); 
+    for(i = 0; i < SUDOKU_SIZE; ++i){
+        for(j = 0; j < SUDOKU_SIZE; ++j){
+            fscanf(fp, "%d", &sudoku[i][j]); 
+        }
     }
     fclose(fp); 
     
@@ -196,6 +202,6 @@ int main(int argc, char** argv){
         printf("SOLUTION: NO ");
     printf("(%f seconds)\n",
         (double)(end - start) / CLOCKS_PER_SEC);
-    
+    free(line); 
     return 0; 
 }
