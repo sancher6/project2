@@ -15,17 +15,7 @@ Project 2
 #define CORRECT_SUDOKU 45
 
 int valid = 1;
-int sudoku[SUDOKU_SIZE][SUDOKU_SIZE] = {/* ; /* DEBUG */
-    {1,2,3,4,5,6,7,8,9},
-    {7,8,9,1,2,3,4,5,6},
-    {4,5,6,7,8,9,1,2,3},
-    {3,1,2,8,4,5,9,6,7},
-    {6,9,7,3,1,2,8,4,5},
-    {8,4,5,6,9,7,3,1,2},
-    {2,3,1,5,7,4,6,9,8},
-    {9,6,8,2,3,1,5,7,4},
-    {5,7,4,9,6,8,2,3,1}
-};
+int sudoku[SUDOKU_SIZE][SUDOKU_SIZE]; 
 
 void *rowCheck(void *param){
     int check[SUDOKU_SIZE] = {0,0,0,0,0,0,0,0,0};
@@ -132,6 +122,9 @@ int main(int argc, char** argv){
     pthread_t col[SUDOKU_SIZE];
     pthread_t sqr[SUDOKU_SIZE];
     int id[SUDOKU_SIZE];
+    int i = 0, totalnums, j = 0;
+    size_t count; 
+    char *line = malloc(SUDOKU_SIZE); 
     double time = 0.0;
     int option = atoi(argv[1]);
     clock_t start,end;
@@ -141,30 +134,34 @@ int main(int argc, char** argv){
         printf("Could not open file %s", filename); 
         return 1; 
     }
-    while(fgets(str, MAXCHAR, fp) != NULL){
-        printf("%s\n", str); 
+    for(i = 0; i < SUDOKU_SIZE; ++i){
+        for(j = 0; j < SUDOKU_SIZE; ++j){
+            fscanf(fp, "%d", &sudoku[i][j]); 
+        }
     }
     fclose(fp); 
     
-    /* each thread does all 9 parts */
+    /* start clock */
+    start = clock();
+    
+    /* each thread does all 9 parts, 1 thread per sqr */
     if(option == 1){
-        start = clock();
         pthread_create(&rows,NULL,rowCheck,NULL);
         pthread_create(&cols,NULL,colCheck,NULL);
-        pthread_create(&sqrs,NULL,sqrCheck,NULL);
-        end = clock();
+        for(int i = 0; i < SUDOKU_SIZE; i++){
+            id[i] = i;
+            pthread_create(&sqr[i],NULL,checkOneSqr,(void*)(id+i));
+        }
     }
     
     /* each thread does only 1 part */
     if(option == 2){
-        start = clock();
         for(int i = 0; i < SUDOKU_SIZE; i++){
             id[i] = i;
             pthread_create(&row[i],NULL,checkOneRow,(void*)(id+i));
             pthread_create(&col[i],NULL,checkOneCol,(void*)(id+i));
             pthread_create(&sqr[i],NULL,checkOneSqr,(void*)(id+i));
         }
-        end = clock();
     }
     
     /* close threads w/ all 9 parts */
@@ -183,6 +180,9 @@ int main(int argc, char** argv){
         }
     }
     
+    /* stop clock */
+    end = clock();
+    
     time = (double)(end - start) / CLOCKS_PER_SEC;
     
     printf("BOARD STATE IN %s:\n",filename);
@@ -197,6 +197,10 @@ int main(int argc, char** argv){
     else
         printf("SOLUTION: NO ");
     printf("(%f seconds)\n",time);
+    
+    printf("(%f seconds)\n",
+        (double)(end - start) / CLOCKS_PER_SEC);
+    free(line); 
     
     return 0; 
 }
