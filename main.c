@@ -77,27 +77,6 @@ void *checkOneCol(void *param){
         valid = 0;
 }
 
-void *sqrCheck(void *param){
-    int sum = 0;
-    int sqrSum = 0;
-    
-    for(int n = 0; n < (SUDOKU_SIZE / 3); n++){
-        for(int m = 0; m < (SUDOKU_SIZE / 3); m++){
-            for(int i = 0; i < (SUDOKU_SIZE / 3); i++){
-                for(int j = 0; j < (SUDOKU_SIZE / 3); j++){
-                    sqrSum += sudoku[i+(3*n)][j+(3*m)];
-                }
-            }
-            if(sqrSum = CORRECT_SUDOKU)
-                sum++;
-            sqrSum = 0;
-        }
-    }
-    
-    if(sum != SUDOKU_SIZE)
-        valid = 0;
-}
-
 void *checkOneSqr(void *param){
     int *sqr = (int*) param;
     int sqrSum = 0;
