@@ -183,6 +183,8 @@ int main(int argc, char** argv){
         }
     }
     
+    time = (double)(end - start) / CLOCKS_PER_SEC;
+    
     printf("BOARD STATE IN %s:\n",filename);
     for(int i = 0; i < SUDOKU_SIZE; i++){
         for(int j = 0; j < SUDOKU_SIZE; j++){
@@ -194,8 +196,7 @@ int main(int argc, char** argv){
         printf("SOLUTION: YES ");
     else
         printf("SOLUTION: NO ");
-    printf("(%f seconds)\n",
-        (double)(end - start) / CLOCKS_PER_SEC);
+    printf("(%f seconds)\n",time);
     
     return 0; 
 }
