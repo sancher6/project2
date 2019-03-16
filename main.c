@@ -93,7 +93,8 @@ void *checkOneSqr(void *param){
 }
 
 int main(int argc, char** argv){
-    FILE* fp; 
+    FILE* fp;
+    FILE* out;  
     char str[MAXCHAR]; 
     char* filename = "input.txt";
     pthread_t rows,cols,sqrs;
@@ -101,7 +102,7 @@ int main(int argc, char** argv){
     pthread_t col[SUDOKU_SIZE];
     pthread_t sqr[SUDOKU_SIZE];
     int id[SUDOKU_SIZE];
-    int i = 0, totalnums, j = 0;
+    int i = 0, totalnums, runs, j = 0;
     size_t count; 
     char *line = malloc(SUDOKU_SIZE); 
     double time = 0.0;
@@ -119,7 +120,7 @@ int main(int argc, char** argv){
         }
     }
     fclose(fp); 
-    
+
     /* start clock */
     start = clock();
     
@@ -179,7 +180,12 @@ int main(int argc, char** argv){
     
     printf("(%f seconds)\n",
         (double)(end - start) / CLOCKS_PER_SEC);
+
     free(line); 
-    
+    out = fopen("output1.txt", "w");
+    fprintf(out, "%f ", time); 
+    fclose(out);
+
+        
     return 0; 
 }
