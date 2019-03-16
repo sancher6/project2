@@ -92,9 +92,17 @@ void *checkOneSqr(void *param){
         valid = 0;
 }
 
+void *writetofile(FILE* out, double time){
+    fprintf(out,"%f ", time); 
+    fclose(out);
+}
 int main(int argc, char** argv){
     FILE* fp;
-    FILE* out;  
+    FILE* out = fopen("output2.txt", "a");
+    if(out == NULL){
+        printf("couldn't open file %s \n", "output1.txt");
+        exit(0); 
+    }  
     char str[MAXCHAR]; 
     char* filename = "input.txt";
     pthread_t rows,cols,sqrs;
@@ -120,7 +128,6 @@ int main(int argc, char** argv){
         }
     }
     fclose(fp); 
-
     /* start clock */
     start = clock();
     
@@ -181,11 +188,8 @@ int main(int argc, char** argv){
     printf("(%f seconds)\n",
         (double)(end - start) / CLOCKS_PER_SEC);
 
-    free(line); 
-    out = fopen("output1.txt", "w");
-    fprintf(out, "%f ", time); 
-    fclose(out);
+    writetofile(out, time); 
 
-        
+    free(line); 
     return 0; 
 }
