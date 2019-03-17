@@ -17,6 +17,7 @@ Project 2
 int valid = 1;
 int sudoku[SUDOKU_SIZE][SUDOKU_SIZE]; 
 
+/* validates row */ 
 void *rowCheck(void *param){
     int check[SUDOKU_SIZE] = {0,0,0,0,0,0,0,0,0};
     int rowSum = 0;
@@ -35,7 +36,7 @@ void *rowCheck(void *param){
             valid = 0;
     }
 }
-
+/* checks a single row */ 
 void *checkOneRow(void *param){
     int *row = (int*) param;
     int rowSum = 0;
@@ -46,7 +47,7 @@ void *checkOneRow(void *param){
     if(rowSum != CORRECT_SUDOKU)
         valid = 0;
 }
-
+/* validates column */ 
 void *colCheck(void *param){
     int check[SUDOKU_SIZE] = {0,0,0,0,0,0,0,0,0};
     int colSum = 0;
@@ -65,7 +66,7 @@ void *colCheck(void *param){
             valid = 0;
     }
 }
-
+/* checks a single column */ 
 void *checkOneCol(void *param){
     int *col = (int*) param;
     int colSum = 0;
@@ -76,7 +77,7 @@ void *checkOneCol(void *param){
     if(colSum != CORRECT_SUDOKU)
         valid = 0;
 }
-
+/* checks a single 3x3 square */ 
 void *checkOneSqr(void *param){
     int *sqr = (int*) param;
     int sqrSum = 0;
@@ -91,13 +92,14 @@ void *checkOneSqr(void *param){
     if(sqrSum != CORRECT_SUDOKU)
         valid = 0;
 }
-
+/* writes computation time results to a file */ 
 void *writetofile(FILE* out, double time){
     fprintf(out,"%f ", time); 
     fclose(out);
 }
 int main(int argc, char** argv){
     FILE* fp;
+    /* modify filename to specify which option was utilized */ 
     FILE* out = fopen("output2.txt", "a");
     if(out == NULL){
         printf("couldn't open file %s \n", "output1.txt");
@@ -116,7 +118,7 @@ int main(int argc, char** argv){
     double time = 0.0;
     int option = atoi(argv[1]);
     clock_t start,end;
-
+    /*opens file and write it to a 2D array (9x9) */
     fp = fopen(filename, "r"); 
     if(fp == NULL){
         printf("Could not open file %s", filename); 
@@ -188,6 +190,7 @@ int main(int argc, char** argv){
     printf("(%f seconds)\n",
         (double)(end - start) / CLOCKS_PER_SEC);
 
+    /* send results to file */ 
     writetofile(out, time); 
 
     free(line); 
