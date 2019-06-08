@@ -13,6 +13,5 @@ C program to fetch Sudoku table from an input file and validate the game with th
 ### Results: 
 <p align="center">
   <img width="460" height="300" src="https://github.com/sancher6/project2/blob/master/Media/bargraph.png">
+  *Figure 1.* Bar graph for average computation times of options 1&2 with confidence intervals
 </p>
-
-*Figure 1.* Bar graph for average computation times of options 1&2 with confidence intervals
