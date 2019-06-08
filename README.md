@@ -12,6 +12,8 @@ C program to fetch Sudoku table from an input file and validate the game with th
 * A separate script was made to execute the original script 50 times on the desired option and output the average computation time. Input board was correct for one iteration and incorrect for the other, allowing for a total of 100 runs per option. The averages and standard deviations of computation time for the separate correct and incorrect input boards for the two methods are shown below in the bar graph. The results below show that option 1 was the significantly quicker method. It can be deduced that it is significantly quicker to simply have three threads doing repetitive tasks rather than having 27 threads for each repetition of the task, at least on the provided virtual machines. 
 ### Results: 
 <p align="center">
-  <img width="460" height="300" src="https://github.com/sancher6/project2/blob/master/Media/bargraph.png">
-  *Figure 1.* Bar graph for average computation times of options 1&2 with confidence intervals
+  <img src="https://github.com/sancher6/project2/blob/master/Media/bargraph.png">
+  <center>
+    <b> Figure 1. </b>Bar graph for average computation times of options 1&2 with confidence intervals
+  </center> 
 </p>
