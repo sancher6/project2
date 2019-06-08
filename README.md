@@ -1,11 +1,11 @@
 # Richard Bustamante & Paul Brodhead
-# CSC345-01 
-# project2
-## Description: 
+## CSC345-01 
+## project2
+### Description: 
 C program to fetch Sudoku table from an input file and validate the game with the use of 2 methodologies: utilizing 3 threads (one for columns, rows, and 3x3 squares) and the other utilizing 27 threads (nine for columns, rows, and 3x3 squares). These two methods were compared based on average computation time. 
-## Get Started: 
+### Get Started: 
 
-## Results and Fulfillments: 
+### Results and Fulfillments: 
 * Program successfully fetches Sudoku table from an input file and transfers it to a 2D array (9x9 matrix) 
 * Program successfully outputs board state and validates the game, along with a computation time in seconds 
 * Program can run both methods: with three threads (one for columns, rows, and squares) and 27 threads (nine for columns, rows, and squares) 
